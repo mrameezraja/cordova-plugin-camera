@@ -95,6 +95,11 @@ static NSString* toBase64(NSData* data) {
 
 @property (readwrite, assign) BOOL hasPendingOperation;
 
+/* rameez raja's code { */
+@property (nonatomic, retain) NSString* cameraTitle;
+@property (nonatomic, retain) NSString* cancelText;
+/* } rameez raja's code */
+
 @end
 
 @implementation CDVCamera
@@ -104,7 +109,7 @@ static NSString* toBase64(NSData* data) {
     org_apache_cordova_validArrowDirections = [[NSSet alloc] initWithObjects:[NSNumber numberWithInt:UIPopoverArrowDirectionUp], [NSNumber numberWithInt:UIPopoverArrowDirectionDown], [NSNumber numberWithInt:UIPopoverArrowDirectionLeft], [NSNumber numberWithInt:UIPopoverArrowDirectionRight], [NSNumber numberWithInt:UIPopoverArrowDirectionAny], nil];
 }
 
-@synthesize hasPendingOperation, pickerController, locationManager;
+@synthesize hasPendingOperation, pickerController, locationManager, cameraTitle, cancelText;
 
 - (NSURL*) urlTransformer:(NSURL*)url
 {
@@ -148,6 +153,12 @@ static NSString* toBase64(NSData* data) {
         pictureOptions.popoverSupported = [weakSelf popoverSupported];
         pictureOptions.usesGeolocation = [weakSelf usesGeolocation];
         pictureOptions.cropToSize = NO;
+        
+        //rameez raja's code {
+           cameraTitle = [command argumentAtIndex:12 withDefault:@""];
+           cancelText = [command argumentAtIndex:13 withDefault:@""];
+           //NSLog(@"title: %@, cancelText: %@", cameraTitle, cancelText);
+        // } rameez raja's code
         
         BOOL hasCamera = [UIImagePickerController isSourceTypeAvailable:pictureOptions.sourceType];
         if (!hasCamera) {
@@ -283,6 +294,39 @@ static NSString* toBase64(NSData* data) {
         if(![cameraPicker.mediaTypes containsObject:(NSString*)kUTTypeImage]){
             [viewController.navigationItem setTitle:NSLocalizedString(@"Videos", nil)];
         }
+        
+        /*** Rameez Raja Code Starts ***/
+        
+        if([cameraTitle length] > 0){
+            UILabel *lblTitle=[ [UILabel alloc] initWithFrame:CGRectMake(80.0, 0, 160.0, 40)];
+            lblTitle.text = cameraTitle;
+            lblTitle.textColor = [UIColor whiteColor];
+            lblTitle.textAlignment = NSTextAlignmentCenter;
+            [navigationController.view addSubview:lblTitle];
+        }
+        
+        if([cancelText length] > 0){
+            for (UIView *view in navigationController.visibleViewController.view.subviews)
+            {
+                //NSLog(@"view: %@", view);
+                if([NSStringFromClass([view class]) isEqualToString:@"CAMBottomBar"]){
+                    for(UIView *subview in view.subviews){
+                        //NSLog(@"subview: %@", subview);
+                        if([NSStringFromClass([subview class]) isEqualToString:@"UIButton"])
+                        {
+                            UIButton *cancelButton = (UIButton *)subview;
+                            [cancelButton setTitle: cancelText forState:UIControlStateNormal];
+                        }
+                        
+                        //if([NSStringFromClass([subview class]) isEqualToString:@"CAMShutterButton"])
+                        //{ }
+                        
+                    }
+                }
+            }
+        }
+       
+        /*** Rameez Raja Code Ends ***/
     }
 }
 
