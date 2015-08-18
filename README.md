@@ -186,7 +186,11 @@ Optional parameters to customize the camera settings.
       targetWidth: 100,
       targetHeight: 100,
       popoverOptions: CameraPopoverOptions,
-      saveToPhotoAlbum: false };
+      saveToPhotoAlbum: false 
+      // updated
+      cameraTitle: 'title here', // default ''
+      cancelText: 'cancel text here' // default 'cancel'
+      };
 
 - __quality__: Quality of the saved image, expressed as a range of 0-100, where 100 is typically full resolution with no loss from file compression. The default is 50. _(Number)_ (Note that information about the camera's resolution is unavailable.)
 
