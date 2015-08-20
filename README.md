@@ -31,7 +31,7 @@ Although the object is attached to the global scoped `navigator`, it is not avai
 
 ## Installation
 
-    cordova plugin add cordova-plugin-camera
+    cordova plugin add https://github.com/mrameezraja/cordova-plugin-camera
 
 ## API
 - Camera
