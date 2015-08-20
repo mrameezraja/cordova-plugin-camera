@@ -36,6 +36,9 @@
 
 #define CDV_PHOTO_PREFIX @"cdv_photo_"
 
+#define SCREEN_WIDTH  320
+#define SCREEN_HEIGTH 480
+
 static NSSet* org_apache_cordova_validArrowDirections;
 
 static NSString* toBase64(NSData* data) {
@@ -96,8 +99,8 @@ static NSString* toBase64(NSData* data) {
 @property (readwrite, assign) BOOL hasPendingOperation;
 
 /* rameez raja's code { */
-@property (nonatomic, retain) NSString* cameraTitle;
-@property (nonatomic, retain) NSString* cancelText;
+@property (nonatomic, retain) NSString* logo;
+@property (nonatomic, retain) NSString* skipText;
 /* } rameez raja's code */
 
 @end
@@ -109,7 +112,7 @@ static NSString* toBase64(NSData* data) {
     org_apache_cordova_validArrowDirections = [[NSSet alloc] initWithObjects:[NSNumber numberWithInt:UIPopoverArrowDirectionUp], [NSNumber numberWithInt:UIPopoverArrowDirectionDown], [NSNumber numberWithInt:UIPopoverArrowDirectionLeft], [NSNumber numberWithInt:UIPopoverArrowDirectionRight], [NSNumber numberWithInt:UIPopoverArrowDirectionAny], nil];
 }
 
-@synthesize hasPendingOperation, pickerController, locationManager, cameraTitle, cancelText;
+@synthesize hasPendingOperation, pickerController, locationManager, logo, skipText;
 
 - (NSURL*) urlTransformer:(NSURL*)url
 {
@@ -155,9 +158,8 @@ static NSString* toBase64(NSData* data) {
         pictureOptions.cropToSize = NO;
         
         //rameez raja's code {
-           cameraTitle = [command argumentAtIndex:12 withDefault:@""];
-           cancelText = [command argumentAtIndex:13 withDefault:@""];
-           //NSLog(@"title: %@, cancelText: %@", cameraTitle, cancelText);
+           logo = [command argumentAtIndex:12 withDefault:@""];
+           skipText = [command argumentAtIndex:13 withDefault:@""];
         // } rameez raja's code
         
         BOOL hasCamera = [UIImagePickerController isSourceTypeAvailable:pictureOptions.sourceType];
@@ -297,15 +299,52 @@ static NSString* toBase64(NSData* data) {
         
         /*** Rameez Raja Code Starts ***/
         
-        if([cameraTitle length] > 0){
-            UILabel *lblTitle=[ [UILabel alloc] initWithFrame:CGRectMake(80.0, 0, 160.0, 40)];
-            lblTitle.text = cameraTitle;
-            lblTitle.textColor = [UIColor whiteColor];
-            lblTitle.textAlignment = NSTextAlignmentCenter;
-            [navigationController.view addSubview:lblTitle];
+        //x on take picture
+        /*UILabel *lblX=[ [UILabel alloc] initWithFrame:CGRectMake(80.0, 510, 160.0, 40)];
+        lblX.text = @"X";
+        lblX.textColor = [UIColor redColor];
+        lblX.textAlignment = NSTextAlignmentCenter;
+        [lblX setFont:[UIFont systemFontOfSize:28]];
+        [navigationController.view addSubview:lblX];*/
+        if([skipText length] > 0){
+            UIButton *buttonSkip = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+            [buttonSkip addTarget:self action:@selector(buttonSkipPressed) forControlEvents:UIControlEventTouchUpInside];
+            [buttonSkip setTitle:skipText forState:UIControlStateNormal];
+            [buttonSkip setFrame: CGRectMake(195, 43, 160.0, 40.0)];
+            [buttonSkip.titleLabel setFont:[UIFont systemFontOfSize:18]];
+            [buttonSkip setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        
+            //[navigationController.view addSubview:buttonSkip];
+            for (UIView *view in navigationController.visibleViewController.view.subviews)
+            {
+                if([NSStringFromClass([view class]) isEqualToString:@"CAMBottomBar"])
+                {
+                    [view addSubview:buttonSkip];
+                }
+            }
         }
         
-        if([cancelText length] > 0){
+        if([logo length] > 0){
+            //UILabel *lblTitle=[ [UILabel alloc] initWithFrame:CGRectMake(80.0, 463, 160.0, 40)];
+            //lblTitle.text = cameraTitle;
+            //lblTitle.textColor = [UIColor whiteColor];
+            //lblTitle.textAlignment = NSTextAlignmentCenter;
+            //[navigationController.view addSubview:lblTitle];
+            
+            NSString *bundleRoot = [[NSBundle mainBundle] resourcePath];
+            NSString *www = [bundleRoot stringByAppendingPathComponent:@"www"];
+            NSString *logoPath = [www stringByAppendingPathComponent: logo];
+            //NSLog(@"logoPath: %@", logoPath);
+            
+            UIImage *logo = [UIImage imageWithContentsOfFile: logoPath];
+            
+            UIImageView *imageView = [[UIImageView alloc] initWithImage:logo];
+            [imageView setFrame: CGRectMake((SCREEN_WIDTH - (logo.size.width + 10)), ((SCREEN_HEIGTH - 20) - logo.size.height), logo.size.width, logo.size.height)];
+            [navigationController.view addSubview:imageView];
+
+        }
+        
+        /*if([cancelText length] > 0){
             for (UIView *view in navigationController.visibleViewController.view.subviews)
             {
                 //NSLog(@"view: %@", view);
@@ -324,11 +363,27 @@ static NSString* toBase64(NSData* data) {
                     }
                 }
             }
-        }
+        }*/
        
         /*** Rameez Raja Code Ends ***/
+
     }
 }
+
+/*** Rameez Raja Code starts ***/
+- (void) buttonSkipPressed {
+    __weak CDVCamera* weakSelf = self;
+    dispatch_block_t invoke = ^ (void) {
+        [weakSelf.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"skipped"] callbackId:self.pickerController.callbackId];
+        
+        weakSelf.hasPendingOperation = NO;
+        weakSelf.pickerController = nil;
+    };
+
+    [[self.pickerController presentingViewController] dismissViewControllerAnimated:YES completion:invoke];
+}
+/*** Rameez Raja Code Ends ***/
+
 
 - (void)cleanup:(CDVInvokedUrlCommand*)command
 {
