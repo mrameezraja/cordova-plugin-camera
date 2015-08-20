@@ -188,8 +188,8 @@ Optional parameters to customize the camera settings.
       popoverOptions: CameraPopoverOptions,
       saveToPhotoAlbum: false 
       // updated
-      cameraTitle: 'title here', // default ''
-      cancelText: 'cancel text here' // default 'cancel'
+      logo: '/img/logo.png', // img is folder inside www
+      skipText: 'Skip'
       };
 
 - __quality__: Quality of the saved image, expressed as a range of 0-100, where 100 is typically full resolution with no loss from file compression. The default is 50. _(Number)_ (Note that information about the camera's resolution is unavailable.)
