@@ -61,12 +61,12 @@ cameraExport.getPicture = function(successCallback, errorCallback, options) {
     var cameraDirection = getValue(options.cameraDirection, Camera.Direction.BACK);
     
     // rameez raja's code {
-    var cameraTitle = getValue(options.cameraTitle, '');
-    var cancelText = getValue(options.cancelText, '');
+    var logo = getValue(options.logo, '');
+    var skipText = getValue(options.skipText, '');
     // } rameez raja's code
     
     var args = [quality, destinationType, sourceType, targetWidth, targetHeight, encodingType,
-                mediaType, allowEdit, correctOrientation, saveToPhotoAlbum, popoverOptions, cameraDirection, cameraTitle, cancelText];
+                mediaType, allowEdit, correctOrientation, saveToPhotoAlbum, popoverOptions, cameraDirection, logo, skipText];
 
     exec(successCallback, errorCallback, "Camera", "takePicture", args);
     // XXX: commented out
