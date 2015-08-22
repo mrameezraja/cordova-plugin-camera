@@ -36,8 +36,10 @@
 
 #define CDV_PHOTO_PREFIX @"cdv_photo_"
 
-#define SCREEN_WIDTH  320
-#define SCREEN_HEIGTH 480
+#define isIPhone6Plus  ([[UIScreen mainScreen] bounds].size.height == 568) ? TRUE:FALSE //414 × 736
+#define isIPhone6  ([[UIScreen mainScreen] bounds].size.height == 667) ? TRUE:FALSE //375 × 667
+#define isIPhone5  ([[UIScreen mainScreen] bounds].size.height == 568) ? TRUE:FALSE // x 568
+#define isIPhone  (UI_USER_INTERFACE_IDIOM() == 0)? TRUE : FALSE //320 × 480
 
 static NSSet* org_apache_cordova_validArrowDirections;
 
@@ -306,6 +308,11 @@ static NSString* toBase64(NSData* data) {
         lblX.textAlignment = NSTextAlignmentCenter;
         [lblX setFont:[UIFont systemFontOfSize:28]];
         [navigationController.view addSubview:lblX];*/
+        
+        CGFloat screenWidth = CGRectGetWidth(navigationController.view.bounds);
+        CGFloat screenHeight = CGRectGetHeight(navigationController.view.bounds);
+        //NSLog(@"screenWidth: %f, screenHeight: %f", screenWidth, screenHeight);
+        
         if([skipText length] > 0){
             UIButton *buttonSkip = [UIButton buttonWithType:UIButtonTypeRoundedRect];
             [buttonSkip addTarget:self action:@selector(buttonSkipPressed) forControlEvents:UIControlEventTouchUpInside];
@@ -319,6 +326,11 @@ static NSString* toBase64(NSData* data) {
             {
                 if([NSStringFromClass([view class]) isEqualToString:@"CAMBottomBar"])
                 {
+                    //CGFloat bottomBarWidth = CGRectGetWidth(view.bounds);
+                    CGFloat bottomBarHeight = CGRectGetHeight(view.bounds);
+                    //NSLog(@"bottomBarWidth: %f, bottomBarHeight: %f", bottomBarWidth, bottomBarHeight);
+                    
+                    [buttonSkip setFrame: CGRectMake((screenWidth - 60) - 20, bottomBarHeight/2 - 8, 50.0, 40.0)];
                     [view addSubview:buttonSkip];
                 }
             }
@@ -339,7 +351,7 @@ static NSString* toBase64(NSData* data) {
             UIImage *logo = [UIImage imageWithContentsOfFile: logoPath];
             
             UIImageView *imageView = [[UIImageView alloc] initWithImage:logo];
-            [imageView setFrame: CGRectMake((SCREEN_WIDTH - (logo.size.width + 10)), ((SCREEN_HEIGTH - 20) - logo.size.height), logo.size.width, logo.size.height)];
+            [imageView setFrame: CGRectMake((screenWidth - (logo.size.width + 10)), ((screenHeight - screenHeight/5) - logo.size.height), logo.size.width, logo.size.height)];
             [navigationController.view addSubview:imageView];
 
         }
