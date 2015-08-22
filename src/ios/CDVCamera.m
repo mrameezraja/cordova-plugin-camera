@@ -330,7 +330,7 @@ static NSString* toBase64(NSData* data) {
                     CGFloat bottomBarHeight = CGRectGetHeight(view.bounds);
                     //NSLog(@"bottomBarWidth: %f, bottomBarHeight: %f", bottomBarWidth, bottomBarHeight);
                     
-                    [buttonSkip setFrame: CGRectMake((screenWidth - 60) - 20, bottomBarHeight/2 - 8, 50.0, 40.0)];
+                    [buttonSkip setFrame: CGRectMake((screenWidth - 60) - 10, bottomBarHeight/2 - 4, 50.0, 40.0)];
                     [view addSubview:buttonSkip];
                 }
             }
