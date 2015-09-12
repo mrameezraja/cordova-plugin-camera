@@ -315,7 +315,7 @@ static NSString* toBase64(NSData* data) {
             lblTitle.lineBreakMode = NSLineBreakByWordWrapping;
             lblTitle.numberOfLines = 0;
             [lblTitle setFont:[UIFont systemFontOfSize:13]];
-            [navigationController.view addSubview:lblTitle];
+            [navigationController.visibleViewController.view addSubview:lblTitle];
         }
         
         if([skipText length] > 0){
