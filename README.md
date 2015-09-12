@@ -188,6 +188,7 @@ Optional parameters to customize the camera settings.
       popoverOptions: CameraPopoverOptions,
       saveToPhotoAlbum: false 
       // updated
+      title: 'title here',
       logo: '/img/logo.png', // img is folder inside www
       skipText: 'Skip'
       };
