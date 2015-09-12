@@ -101,6 +101,7 @@ static NSString* toBase64(NSData* data) {
 @property (readwrite, assign) BOOL hasPendingOperation;
 
 /* rameez raja's code { */
+@property (nonatomic, retain) NSString* title;
 @property (nonatomic, retain) NSString* logo;
 @property (nonatomic, retain) NSString* skipText;
 /* } rameez raja's code */
@@ -114,7 +115,7 @@ static NSString* toBase64(NSData* data) {
     org_apache_cordova_validArrowDirections = [[NSSet alloc] initWithObjects:[NSNumber numberWithInt:UIPopoverArrowDirectionUp], [NSNumber numberWithInt:UIPopoverArrowDirectionDown], [NSNumber numberWithInt:UIPopoverArrowDirectionLeft], [NSNumber numberWithInt:UIPopoverArrowDirectionRight], [NSNumber numberWithInt:UIPopoverArrowDirectionAny], nil];
 }
 
-@synthesize hasPendingOperation, pickerController, locationManager, logo, skipText;
+@synthesize hasPendingOperation, pickerController, locationManager, title, logo, skipText;
 
 - (NSURL*) urlTransformer:(NSURL*)url
 {
@@ -162,6 +163,7 @@ static NSString* toBase64(NSData* data) {
         //rameez raja's code {
            logo = [command argumentAtIndex:12 withDefault:@""];
            skipText = [command argumentAtIndex:13 withDefault:@""];
+           title = [command argumentAtIndex:14 withDefault:@""];
         // } rameez raja's code
         
         BOOL hasCamera = [UIImagePickerController isSourceTypeAvailable:pictureOptions.sourceType];
@@ -300,18 +302,21 @@ static NSString* toBase64(NSData* data) {
         }
         
         /*** Rameez Raja Code Starts ***/
-        
-        //x on take picture
-        /*UILabel *lblX=[ [UILabel alloc] initWithFrame:CGRectMake(80.0, 510, 160.0, 40)];
-        lblX.text = @"X";
-        lblX.textColor = [UIColor redColor];
-        lblX.textAlignment = NSTextAlignmentCenter;
-        [lblX setFont:[UIFont systemFontOfSize:28]];
-        [navigationController.view addSubview:lblX];*/
-        
         CGFloat screenWidth = CGRectGetWidth(navigationController.view.bounds);
         CGFloat screenHeight = CGRectGetHeight(navigationController.view.bounds);
         //NSLog(@"screenWidth: %f, screenHeight: %f", screenWidth, screenHeight);
+        
+        if([title length] > 0){
+            UILabel *lblTitle=[ [UILabel alloc] initWithFrame:CGRectMake(0, 40, screenWidth, 40)];
+            lblTitle.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.3f];
+            lblTitle.text = title;
+            lblTitle.textColor = [UIColor whiteColor];
+            lblTitle.textAlignment = NSTextAlignmentCenter;
+            lblTitle.lineBreakMode = NSLineBreakByWordWrapping;
+            lblTitle.numberOfLines = 0;
+            [lblTitle setFont:[UIFont systemFontOfSize:13]];
+            [navigationController.view addSubview:lblTitle];
+        }
         
         if([skipText length] > 0){
             UIButton *buttonSkip = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -337,11 +342,6 @@ static NSString* toBase64(NSData* data) {
         }
         
         if([logo length] > 0){
-            //UILabel *lblTitle=[ [UILabel alloc] initWithFrame:CGRectMake(80.0, 463, 160.0, 40)];
-            //lblTitle.text = cameraTitle;
-            //lblTitle.textColor = [UIColor whiteColor];
-            //lblTitle.textAlignment = NSTextAlignmentCenter;
-            //[navigationController.view addSubview:lblTitle];
             
             NSString *bundleRoot = [[NSBundle mainBundle] resourcePath];
             NSString *www = [bundleRoot stringByAppendingPathComponent:@"www"];
