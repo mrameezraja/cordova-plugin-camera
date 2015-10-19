@@ -329,7 +329,8 @@ static NSString* toBase64(NSData* data) {
             //[navigationController.view addSubview:buttonSkip];
             for (UIView *view in navigationController.visibleViewController.view.subviews)
             {
-                if([NSStringFromClass([view class]) isEqualToString:@"CAMBottomBar"])
+            	//NSLog(@"NSStringFromClass([view class]): %@", NSStringFromClass([view class]));
+                if([NSStringFromClass([view class]) isEqualToString:@"CAMBottomBar"] || [NSStringFromClass([view class]) isEqualToString:@"CMKBottomBar"])
                 {
                     //CGFloat bottomBarWidth = CGRectGetWidth(view.bounds);
                     CGFloat bottomBarHeight = CGRectGetHeight(view.bounds);
